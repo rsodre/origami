@@ -1,37 +1,37 @@
 use starknet::{ContractAddress, ClassHash};
 use dojo::world::IWorldDispatcher;
 
-#[starknet::interface]
+#[dojo::interface]
 trait IERC20BalanceMock<TState> {
     // IERC20
-    fn total_supply(self: @TState,) -> u256;
-    fn balance_of(self: @TState, account: ContractAddress) -> u256;
-    fn allowance(self: @TState, owner: ContractAddress, spender: ContractAddress) -> u256;
-    fn transfer(ref self: TState, recipient: ContractAddress, amount: u256) -> bool;
+    fn total_supply(world: @IWorldDispatcher,) -> u256;
+    fn balance_of(world: @IWorldDispatcher, account: ContractAddress) -> u256;
+    fn allowance(world: @IWorldDispatcher, owner: ContractAddress, spender: ContractAddress) -> u256;
+    fn transfer(ref world: IWorldDispatcher, recipient: ContractAddress, amount: u256) -> bool;
     fn transfer_from(
-        ref self: TState, sender: ContractAddress, recipient: ContractAddress, amount: u256
+        ref world: IWorldDispatcher, sender: ContractAddress, recipient: ContractAddress, amount: u256
     ) -> bool;
-    fn approve(ref self: TState, spender: ContractAddress, amount: u256) -> bool;
+    fn approve(ref world: IWorldDispatcher, spender: ContractAddress, amount: u256) -> bool;
 
     // IERC20CamelOnly
-    fn totalSupply(self: @TState,) -> u256;
-    fn balanceOf(self: @TState, account: ContractAddress) -> u256;
+    fn totalSupply(world: @IWorldDispatcher,) -> u256;
+    fn balanceOf(world: @IWorldDispatcher, account: ContractAddress) -> u256;
     fn transferFrom(
-        ref self: TState, sender: ContractAddress, recipient: ContractAddress, amount: u256
+        ref world: IWorldDispatcher, sender: ContractAddress, recipient: ContractAddress, amount: u256
     ) -> bool;
 
     // IWorldProvider
-    fn world(self: @TState,) -> IWorldDispatcher;
+    fn world(world: @IWorldDispatcher,) -> IWorldDispatcher;
 
-    fn initializer(ref self: TState, initial_supply: u256, recipient: ContractAddress,);
+    fn initializer(ref world: IWorldDispatcher, initial_supply: u256, recipient: ContractAddress,);
 }
 
-#[starknet::interface]
+#[dojo::interface]
 trait IERC20BalanceMockInit<TState> {
-    fn initializer(ref self: TState, initial_supply: u256, recipient: ContractAddress,);
+    fn initializer(ref world: IWorldDispatcher, initial_supply: u256, recipient: ContractAddress,);
 }
 
-#[dojo::contract(allow_ref_self)]
+#[dojo::contract]
 mod erc20_balance_mock {
     use starknet::ContractAddress;
     use token::components::token::erc20::erc20_allowance::erc20_allowance_component;
@@ -74,7 +74,7 @@ mod erc20_balance_mock {
 
     #[abi(embed_v0)]
     impl InitializerImpl of super::IERC20BalanceMockInit<ContractState> {
-        fn initializer(ref self: ContractState, initial_supply: u256, recipient: ContractAddress,) {
+        fn initializer(ref world: IWorldDispatcher, initial_supply: u256, recipient: ContractAddress,) {
             // set balance for recipient
             self.erc20_balance.update_balance(recipient, 0, initial_supply);
         }

@@ -39,7 +39,7 @@ mod timelock {
         }
 
         fn execute_transaction(
-            world: IWorldDispatcher,
+            world: @IWorldDispatcher,
             target: ContractAddress,
             new_implementation: ClassHash,
             eta: u64
@@ -76,7 +76,7 @@ mod timelock {
         }
 
         fn que_transaction(
-            world: IWorldDispatcher,
+            world: @IWorldDispatcher,
             target: ContractAddress,
             new_implementation: ClassHash,
             eta: u64
@@ -103,7 +103,7 @@ mod timelock {
         }
 
         fn cancel_transaction(
-            world: IWorldDispatcher,
+            world: @IWorldDispatcher,
             target: ContractAddress,
             new_implementation: ClassHash,
             eta: u64

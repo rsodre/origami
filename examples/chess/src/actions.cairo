@@ -16,7 +16,7 @@ mod actions {
     #[abi(embed_v0)]
     impl IActionsImpl of IActions<ContractState> {
         fn spawn(
-            world: IWorldDispatcher, white_address: ContractAddress, black_address: ContractAddress
+            world: @IWorldDispatcher, white_address: ContractAddress, black_address: ContractAddress
         ) -> u32 {
             let game_id = world.uuid();
 
@@ -111,7 +111,7 @@ mod actions {
             game_id
         }
         fn move(
-            world: IWorldDispatcher,
+            world: @IWorldDispatcher,
             curr_position: Vec2,
             next_position: Vec2,
             caller: ContractAddress,

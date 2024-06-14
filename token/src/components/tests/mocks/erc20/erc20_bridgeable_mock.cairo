@@ -1,9 +1,9 @@
 use starknet::ContractAddress;
 
-#[starknet::interface]
+#[dojo::interface]
 trait IERC20BridgeableMockInit<TState> {
     fn initializer(
-        ref self: TState,
+        ref world: IWorldDispatcher,
         name: ByteArray,
         symbol: ByteArray,
         initial_supply: u256,
@@ -12,7 +12,7 @@ trait IERC20BridgeableMockInit<TState> {
     );
 }
 
-#[dojo::contract(allow_ref_self)]
+#[dojo::contract]
 mod erc20_bridgeable_mock {
     use starknet::ContractAddress;
     use starknet::{get_caller_address, get_contract_address};
@@ -107,7 +107,7 @@ mod erc20_bridgeable_mock {
     #[abi(embed_v0)]
     impl ERC20InitializerImpl of super::IERC20BridgeableMockInit<ContractState> {
         fn initializer(
-            ref self: ContractState,
+            ref world: IWorldDispatcher,
             name: ByteArray,
             symbol: ByteArray,
             initial_supply: u256,

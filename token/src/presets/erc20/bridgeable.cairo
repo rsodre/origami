@@ -1,57 +1,57 @@
 use starknet::{ContractAddress, ClassHash};
 use dojo::world::IWorldDispatcher;
 
-#[starknet::interface]
+#[dojo::interface]
 trait IERC20BridgeablePreset<TState> {
     // IWorldProvider
-    fn world(self: @TState,) -> IWorldDispatcher;
+    fn world(world: @IWorldDispatcher,) -> IWorldDispatcher;
 
     // IUpgradeable
-    fn upgrade(ref self: TState, new_class_hash: ClassHash);
+    fn upgrade(ref world: IWorldDispatcher, new_class_hash: ClassHash);
 
     // IERC20Metadata
-    fn decimals(self: @TState,) -> u8;
-    fn name(self: @TState,) -> ByteArray;
-    fn symbol(self: @TState,) -> ByteArray;
+    fn decimals(world: @IWorldDispatcher,) -> u8;
+    fn name(world: @IWorldDispatcher,) -> ByteArray;
+    fn symbol(world: @IWorldDispatcher,) -> ByteArray;
 
     // IERC20MetadataTotalSupply
-    fn total_supply(self: @TState,) -> u256;
+    fn total_supply(world: @IWorldDispatcher,) -> u256;
 
     // IERC20MetadataTotalSupplyCamel
-    fn totalSupply(self: @TState,) -> u256;
+    fn totalSupply(world: @IWorldDispatcher,) -> u256;
 
     // IERC20Balance
-    fn balance_of(self: @TState, account: ContractAddress) -> u256;
-    fn transfer(ref self: TState, recipient: ContractAddress, amount: u256) -> bool;
+    fn balance_of(world: @IWorldDispatcher, account: ContractAddress) -> u256;
+    fn transfer(ref world: IWorldDispatcher, recipient: ContractAddress, amount: u256) -> bool;
     fn transfer_from(
-        ref self: TState, sender: ContractAddress, recipient: ContractAddress, amount: u256
+        ref world: IWorldDispatcher, sender: ContractAddress, recipient: ContractAddress, amount: u256
     ) -> bool;
 
     // IERC20BalanceCamel
-    fn balanceOf(self: @TState, account: ContractAddress) -> u256;
+    fn balanceOf(world: @IWorldDispatcher, account: ContractAddress) -> u256;
     fn transferFrom(
-        ref self: TState, sender: ContractAddress, recipient: ContractAddress, amount: u256
+        ref world: IWorldDispatcher, sender: ContractAddress, recipient: ContractAddress, amount: u256
     ) -> bool;
 
     // IERC20Allowance
-    fn allowance(self: @TState, owner: ContractAddress, spender: ContractAddress) -> u256;
-    fn approve(ref self: TState, spender: ContractAddress, amount: u256) -> bool;
+    fn allowance(world: @IWorldDispatcher, owner: ContractAddress, spender: ContractAddress) -> u256;
+    fn approve(ref world: IWorldDispatcher, spender: ContractAddress, amount: u256) -> bool;
 
     // IERC20Bridgeable
-    fn burn(ref self: TState, account: ContractAddress, amount: u256);
-    fn l2_bridge_address(self: @TState,) -> ContractAddress;
-    fn mint(ref self: TState, recipient: ContractAddress, amount: u256);
+    fn burn(ref world: IWorldDispatcher, account: ContractAddress, amount: u256);
+    fn l2_bridge_address(world: @IWorldDispatcher,) -> ContractAddress;
+    fn mint(ref world: IWorldDispatcher, recipient: ContractAddress, amount: u256);
 
     // WITHOUT INTERFACE !!!
     fn initializer(
-        ref self: TState,
+        ref world: IWorldDispatcher,
         name: ByteArray,
         symbol: ByteArray,
         initial_supply: u256,
         recipient: ContractAddress,
         l2_bridge_address: ContractAddress
     );
-    fn dojo_resource(self: @TState,) -> felt252;
+    fn dojo_resource(world: @IWorldDispatcher,) -> felt252;
 }
 
 
@@ -59,10 +59,10 @@ trait IERC20BridgeablePreset<TState> {
 /// Interface required to remove compiler warnings and future
 /// deprecation.
 ///
-#[starknet::interface]
+#[dojo::interface]
 trait IERC20BridgeableInitializer<TState> {
     fn initializer(
-        ref self: TState,
+        ref world: IWorldDispatcher,
         name: ByteArray,
         symbol: ByteArray,
         initial_supply: u256,
@@ -71,7 +71,7 @@ trait IERC20BridgeableInitializer<TState> {
     );
 }
 
-#[dojo::contract(allow_ref_self)]
+#[dojo::contract]
 mod ERC20Bridgeable {
     use integer::BoundedInt;
     use starknet::ContractAddress;
@@ -185,7 +185,7 @@ mod ERC20Bridgeable {
     #[abi(embed_v0)]
     impl ERC20InitializerImpl of super::IERC20BridgeableInitializer<ContractState> {
         fn initializer(
-            ref self: ContractState,
+            ref world: IWorldDispatcher,
             name: ByteArray,
             symbol: ByteArray,
             initial_supply: u256,

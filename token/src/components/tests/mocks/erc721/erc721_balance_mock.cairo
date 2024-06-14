@@ -39,7 +39,7 @@ trait IERC721BalanceMockInit<TState> {
     fn initializer(ref self: TState, recipient: ContractAddress, token_id: u256);
 }
 
-#[dojo::contract(allow_ref_self)]
+#[dojo::contract]
 mod erc721_balance_mock {
     use starknet::ContractAddress;
     use token::components::token::erc721::erc721_approval::erc721_approval_component;
@@ -104,7 +104,7 @@ mod erc721_balance_mock {
 
     #[abi(embed_v0)]
     impl InitializerImpl of super::IERC721BalanceMockInit<ContractState> {
-        fn initializer(ref self: ContractState, recipient: ContractAddress, token_id: u256) {
+        fn initializer(ref world: IWorldDispatcher, recipient: ContractAddress, token_id: u256) {
             // mint to recipient
             self.erc721_mintable.mint(recipient, token_id);
         }
