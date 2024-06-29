@@ -82,6 +82,7 @@ mod ERC721EnumMintBurn {
     use origami_token::components::token::erc721::erc721_burnable::erc721_burnable_component;
     use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component;
     use origami_token::components::token::erc721::erc721_metadata::erc721_metadata_component;
+    use origami_token::components::token::erc721::erc721_metadata_hooks::ERC721MetadataHooksEmptyImpl;
     use origami_token::components::token::erc721::erc721_mintable::erc721_mintable_component;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component;
 
