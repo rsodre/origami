@@ -32,26 +32,10 @@ mod erc721_burnable_component {
         +Drop<TContractState>,
     > of InternalTrait<TContractState> {
         fn burn(ref self: ComponentState<TContractState>, token_id: u256) {
-            let mut erc721_approval = get_dep_component_mut!(ref self, ERC721Approval);
             let mut erc721_balance = get_dep_component_mut!(ref self, ERC721Balance);
             let mut erc721_owner = get_dep_component_mut!(ref self, ERC721Owner);
-
             let owner = erc721_owner.get_owner(token_id).address;
-
-            // Implicit clear approvals, no need to emit an event
-            erc721_approval.set_token_approval(owner, Zeroable::zero(), token_id, false);
-
-            erc721_balance.set_balance(owner, erc721_balance.get_balance(owner).amount.into() - 1);
-            erc721_owner.set_owner(token_id, Zeroable::zero());
-
-            let transfer_event = erc721_balance_comp::Transfer {
-                from: owner, to: Zeroable::zero(), token_id
-            };
-
-            erc721_balance.emit(transfer_event.clone());
-            emit!(
-                self.get_contract().world(), (erc721_balance_comp::Event::Transfer(transfer_event))
-            );
+            erc721_balance.transfer_internal(owner, Zeroable::zero(), token_id);
         }
     }
 }

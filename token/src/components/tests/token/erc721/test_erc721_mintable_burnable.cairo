@@ -1,7 +1,7 @@
 use integer::BoundedInt;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use dojo::test_utils::spawn_test_world;
-use token::tests::constants::{ZERO, OWNER, SPENDER, RECIPIENT, TOKEN_ID};
+use token::tests::constants::{ZERO, OWNER, SPENDER, RECIPIENT, TOKEN_ID, TOKEN_ID_2, TOKEN_ID_3};
 
 use token::components::token::erc721::erc721_metadata::{erc_721_meta_model, ERC721MetaModel,};
 use token::components::token::erc721::erc721_metadata::erc721_metadata_component::{
@@ -11,6 +11,11 @@ use token::components::token::erc721::erc721_metadata::erc721_metadata_component
 use token::components::token::erc721::erc721_balance::{erc_721_balance_model, ERC721BalanceModel,};
 use token::components::token::erc721::erc721_balance::erc721_balance_component::{
     ERC721BalanceImpl, InternalImpl as ERC721BalanceInternalImpl
+};
+
+use token::components::token::erc721::erc721_owner::{erc_721_owner_model, ERC721OwnerModel,};
+use token::components::token::erc721::erc721_owner::erc721_owner_component::{
+    ERC721OwnerImpl, InternalImpl as ERC721OwnerInternalImpl
 };
 
 use token::components::token::erc721::erc721_mintable::erc721_mintable_component::InternalImpl as ERC721MintableInternalImpl;
@@ -36,7 +41,19 @@ fn test_erc721_mintable_mint() {
     let (_world, mut state) = STATE();
 
     state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID);
-    assert(state.balance_of(RECIPIENT()) == 1, 'invalid balance_of');
+    assert(state.balance_of(RECIPIENT()) == 1, 'invalid balance_of_RECIPIENT_1');
+    assert(state.balance_of(SPENDER()) == 0, 'invalid balance_of_SPENDER_1');
+    assert(state.erc721_owner.owner_of(TOKEN_ID) == RECIPIENT(), 'invalid owner_of_1');
+
+    state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID_2);
+    assert(state.balance_of(RECIPIENT()) == 2, 'invalid balance_of_RECIPIENT_2');
+    assert(state.balance_of(SPENDER()) == 0, 'invalid balance_of_SPENDER_2');
+    assert(state.erc721_owner.owner_of(TOKEN_ID_2) == RECIPIENT(), 'invalid owner_of_2');
+
+    state.erc721_mintable.mint(SPENDER(), TOKEN_ID_3);
+    assert(state.balance_of(RECIPIENT()) == 2, 'invalid balance_of_RECIPIENT_3');
+    assert(state.balance_of(SPENDER()) == 1, 'invalid balance_of_SPENDER_3');
+    assert(state.erc721_owner.owner_of(TOKEN_ID_3) == SPENDER(), 'invalid owner_of_3');
 }
 
 #[test]
@@ -60,5 +77,6 @@ fn test_erc721_burnable_burn() {
     state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID);
     state.erc721_burnable.burn(TOKEN_ID);
     assert(state.balance_of(RECIPIENT()) == 0, 'invalid balance_of');
+    assert(state.erc721_owner.owner_of(TOKEN_ID) == ZERO(), 'invalid owner_of');
 }
 
