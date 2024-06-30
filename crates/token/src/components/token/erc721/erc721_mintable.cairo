@@ -41,18 +41,7 @@ mod erc721_mintable_component {
             let mut erc721_balance = get_dep_component_mut!(ref self, ERC721Balance);
             let mut erc721_owner = get_dep_component_mut!(ref self, ERC721Owner);
             assert(!erc721_owner.exists(token_id), Errors::ALREADY_MINTED);
-
-            erc721_balance.set_balance(to, erc721_balance.get_balance(to).amount.into() + 1);
-            erc721_owner.set_owner(token_id, to);
-
-            let transfer_event = erc721_balance_comp::Transfer {
-                from: Zeroable::zero(), to, token_id
-            };
-
-            erc721_balance.emit(transfer_event.clone());
-            emit!(
-                self.get_contract().world(), (erc721_balance_comp::Event::Transfer(transfer_event))
-            );
+            erc721_balance.transfer_internal(Zeroable::zero(), to, token_id);
         }
 
         fn safe_mint(
