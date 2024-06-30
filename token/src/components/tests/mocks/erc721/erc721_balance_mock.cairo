@@ -44,6 +44,7 @@ mod erc721_balance_mock {
     use starknet::ContractAddress;
     use token::components::token::erc721::erc721_approval::erc721_approval_component;
     use token::components::token::erc721::erc721_balance::erc721_balance_component;
+    use token::components::token::erc721::erc721_balance_hooks::ERC721BalanceHooksEmptyImpl;
     use token::components::token::erc721::erc721_mintable::erc721_mintable_component;
     use token::components::token::erc721::erc721_owner::erc721_owner_component;
 

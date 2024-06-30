@@ -20,6 +20,7 @@ mod components {
         mod erc721 {
             mod erc721_approval;
             mod erc721_balance;
+            mod erc721_balance_hooks;
             mod erc721_burnable;
             mod erc721_enumerable;
             mod erc721_metadata;

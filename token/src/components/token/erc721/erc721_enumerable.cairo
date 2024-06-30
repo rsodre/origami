@@ -96,6 +96,7 @@ mod erc721_enumerable_component {
 
     use token::components::token::erc721::erc721_approval::erc721_approval_component as erc721_approval_comp;
     use token::components::token::erc721::erc721_balance::erc721_balance_component as erc721_balance_comp;
+    use token::components::token::erc721::erc721_balance::erc721_balance_component::ERC721BalanceHooksTrait;
     use token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
 
     use erc721_approval_comp::InternalImpl as ERC721ApprovalInternal;
@@ -119,6 +120,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721Enumerable<ComponentState<TContractState>> {
         fn total_supply(self: @ComponentState<TContractState>) -> u256 {
@@ -150,6 +152,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721EnumerableCamel<ComponentState<TContractState>> {
         fn totalSupply(self: @ComponentState<TContractState>) -> u256 {
@@ -182,6 +185,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
         fn get_total_supply(self: @ComponentState<TContractState>) -> ERC721EnumerableTotalModel {

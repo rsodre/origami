@@ -23,6 +23,7 @@ mod erc721_enumerable_mock {
 
     use token::components::token::erc721::erc721_approval::erc721_approval_component;
     use token::components::token::erc721::erc721_balance::erc721_balance_component;
+    use token::components::token::erc721::erc721_balance_hooks::ERC721BalanceHooksEmptyImpl;
     use token::components::token::erc721::erc721_enumerable::erc721_enumerable_component;
     use token::components::token::erc721::erc721_owner::erc721_owner_component;
 

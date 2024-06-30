@@ -91,6 +91,24 @@ mod erc721_balance_component {
         const SAFE_TRANSFER_FAILED: felt252 = 'ERC721: safe transfer failed';
     }
 
+    ///
+    /// Hooks
+    ///
+    trait ERC721BalanceHooksTrait<TContractState> {
+        fn before_transfer(
+            ref self: ComponentState<TContractState>,
+            from: ContractAddress,
+            to: ContractAddress,
+            token_id: u256,
+        );
+        fn after_transfer(
+            ref self: ComponentState<TContractState>,
+            from: ContractAddress,
+            to: ContractAddress,
+            token_id: u256,
+        );
+    }
+
     #[embeddable_as(ERC721BalanceImpl)]
     impl ERC721Balance<
         TContractState,
@@ -98,6 +116,7 @@ mod erc721_balance_component {
         +IWorldProvider<TContractState>,
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721Balance<ComponentState<TContractState>> {
         fn balance_of(self: @ComponentState<TContractState>, account: ContractAddress) -> u256 {
@@ -144,6 +163,7 @@ mod erc721_balance_component {
         +IWorldProvider<TContractState>,
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721BalanceCamel<ComponentState<TContractState>> {
         fn balanceOf(self: @ComponentState<TContractState>, account: ContractAddress) -> u256 {
@@ -177,6 +197,7 @@ mod erc721_balance_component {
         +IWorldProvider<TContractState>,
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl Hooks: ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
         fn get_balance(
@@ -202,6 +223,8 @@ mod erc721_balance_component {
             to: ContractAddress,
             token_id: u256
         ) {
+            Hooks::before_transfer(ref self, from, to, token_id);
+
             let mut erc721_approval = get_dep_component_mut!(ref self, ERC721Approval);
             let mut erc721_owner = get_dep_component_mut!(ref self, ERC721Owner);
 
@@ -222,6 +245,8 @@ mod erc721_balance_component {
             }
 
             erc721_owner.set_owner(token_id, to);
+
+            Hooks::after_transfer(ref self, from, to, token_id);
 
             let transfer_event = Transfer { from, to, token_id };
 
