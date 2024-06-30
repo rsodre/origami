@@ -1,7 +1,7 @@
 use core::num::traits::Bounded;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use dojo::utils::test::spawn_test_world;
-use origami_token::tests::constants::{ZERO, OWNER, SPENDER, RECIPIENT, TOKEN_ID};
+use origami_token::tests::constants::{ZERO, OWNER, SPENDER, RECIPIENT, TOKEN_ID, TOKEN_ID_2, TOKEN_ID_3};
 
 use origami_token::components::token::erc721::erc721_metadata::{
     erc_721_meta_model, ERC721MetaModel,
@@ -48,7 +48,19 @@ fn test_erc721_mintable_mint() {
     let (_world, mut state) = STATE();
 
     state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID);
-    assert(state.balance_of(RECIPIENT()) == 1, 'invalid balance_of');
+    assert(state.balance_of(RECIPIENT()) == 1, 'invalid balance_of_RECIPIENT_1');
+    assert(state.balance_of(SPENDER()) == 0, 'invalid balance_of_SPENDER_1');
+    assert(state.erc721_owner.owner_of(TOKEN_ID) == RECIPIENT(), 'invalid owner_of_1');
+
+    state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID_2);
+    assert(state.balance_of(RECIPIENT()) == 2, 'invalid balance_of_RECIPIENT_2');
+    assert(state.balance_of(SPENDER()) == 0, 'invalid balance_of_SPENDER_2');
+    assert(state.erc721_owner.owner_of(TOKEN_ID_2) == RECIPIENT(), 'invalid owner_of_2');
+
+    state.erc721_mintable.mint(SPENDER(), TOKEN_ID_3);
+    assert(state.balance_of(RECIPIENT()) == 2, 'invalid balance_of_RECIPIENT_3');
+    assert(state.balance_of(SPENDER()) == 1, 'invalid balance_of_SPENDER_3');
+    assert(state.erc721_owner.owner_of(TOKEN_ID_3) == SPENDER(), 'invalid owner_of_3');
 }
 
 #[test]
@@ -72,5 +84,6 @@ fn test_erc721_burnable_burn() {
     state.erc721_mintable.mint(RECIPIENT(), TOKEN_ID);
     state.erc721_burnable.burn(TOKEN_ID);
     assert(state.balance_of(RECIPIENT()) == 0, 'invalid balance_of');
+    assert(state.erc721_owner.owner_of(TOKEN_ID) == ZERO(), 'invalid owner_of');
 }
 
