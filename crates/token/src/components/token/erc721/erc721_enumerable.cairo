@@ -94,6 +94,10 @@ mod erc721_enumerable_component {
         IWorldProvider, IWorldProviderDispatcher, IWorldDispatcher, IWorldDispatcherTrait
     };
 
+    use origami_token::components::introspection::src5::src5_component as src5_comp;
+    use src5_comp::InternalImpl as SRC5Internal;
+    use origami_token::components::token::erc721::interface::IERC721_ENUMERABLE_ID;
+
     use origami_token::components::token::erc721::erc721_approval::erc721_approval_component as erc721_approval_comp;
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component as erc721_balance_comp;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
@@ -119,6 +123,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +Drop<TContractState>
     > of IERC721Enumerable<ComponentState<TContractState>> {
         fn total_supply(self: @ComponentState<TContractState>) -> u256 {
@@ -150,6 +155,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +Drop<TContractState>
     > of IERC721EnumerableCamel<ComponentState<TContractState>> {
         fn totalSupply(self: @ComponentState<TContractState>) -> u256 {
@@ -182,6 +188,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
         fn get_total_supply(self: @ComponentState<TContractState>) -> ERC721EnumerableTotalModel {
@@ -353,6 +360,13 @@ mod erc721_enumerable_component {
                     index: index.low
                 }
             );
+        }
+
+        fn initialize(
+            ref self: ComponentState<TContractState>
+        ) {
+            let mut src5_component = get_dep_component_mut!(ref self, SRC5);
+            src5_component.register_interface(IERC721_ENUMERABLE_ID);
         }
     }
 }
