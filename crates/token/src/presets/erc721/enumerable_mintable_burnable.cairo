@@ -77,6 +77,7 @@ mod ERC721EnumMintBurn {
     use starknet::ContractAddress;
     use starknet::{get_contract_address, get_caller_address};
     use origami_token::components::security::initializable::initializable_component;
+    use origami_token::components::introspection::src5::src5_component;
     use origami_token::components::token::erc721::erc721_approval::erc721_approval_component;
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component;
     use origami_token::components::token::erc721::erc721_burnable::erc721_burnable_component;
@@ -88,6 +89,7 @@ mod ERC721EnumMintBurn {
 
     component!(path: initializable_component, storage: initializable, event: InitializableEvent);
 
+    component!(path: src5_component, storage: src5, event: SRC5Event);
     component!(
         path: erc721_approval_component, storage: erc721_approval, event: ERC721ApprovalEvent
     );
@@ -107,6 +109,9 @@ mod ERC721EnumMintBurn {
     component!(path: erc721_owner_component, storage: erc721_owner, event: ERC721OwnerEvent);
 
     impl InitializableImpl = initializable_component::InitializableImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl SRC5Impl = src5_component::SRC5Impl<ContractState>;
 
     #[abi(embed_v0)]
     impl ERC721ApprovalImpl =
@@ -156,6 +161,8 @@ mod ERC721EnumMintBurn {
     #[storage]
     struct Storage {
         #[substorage(v0)]
+        src5: src5_component::Storage,
+        #[substorage(v0)]
         initializable: initializable_component::Storage,
         #[substorage(v0)]
         erc721_approval: erc721_approval_component::Storage,
@@ -176,6 +183,8 @@ mod ERC721EnumMintBurn {
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+        #[flat]
+        SRC5Event: src5_component::Event,
         #[flat]
         InitializableEvent: initializable_component::Event,
         #[flat]
