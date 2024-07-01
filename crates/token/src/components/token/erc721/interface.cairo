@@ -5,6 +5,8 @@ const IERC721_METADATA_ID: felt252 =
     0x6069a70848f907fa57668ba1875164eb4dcee693952468581406d131081bbd;
 const IERC721_RECEIVER_ID: felt252 =
     0x3a0dff5f70d80458ad14ae37bb182a728e3c8cdda0402a5daa86620bdf910bc;
+const IERC721_ENUMERABLE_ID: felt252 =
+    0x16bc0f502eeaf65ce0b3acb5eea656e2f26979ce6750e8502a82f377e538c87;
 
 #[starknet::interface]
 trait IERC721<TState> {

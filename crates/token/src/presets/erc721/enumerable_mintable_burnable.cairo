@@ -210,6 +210,7 @@ mod ERC721EnumMintBurn {
             );
 
             self.erc721_metadata.initialize(name, symbol, base_uri);
+            self.erc721_enumerable.initialize();
             self.mint_assets(recipient, token_ids);
 
             self.initializable.initialize();

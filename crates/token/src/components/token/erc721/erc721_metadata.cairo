@@ -44,6 +44,10 @@ mod erc721_metadata_component {
         IWorldProvider, IWorldProviderDispatcher, IWorldDispatcher, IWorldDispatcherTrait
     };
 
+    use origami_token::components::introspection::src5::src5_component as src5_comp;
+    use src5_comp::InternalImpl as SRC5Internal;
+    use origami_token::components::token::erc721::interface::{IERC721_ID, IERC721_METADATA_ID};
+
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
     use erc721_owner_comp::InternalImpl as ERC721OwnerInternal;
 
@@ -71,6 +75,7 @@ mod erc721_metadata_component {
         +HasComponent<TContractState>,
         +IWorldProvider<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +ERC721MetadataHooksTrait<TContractState>,
         +Drop<TContractState>,
     > of IERC721Metadata<ComponentState<TContractState>> {
@@ -91,6 +96,7 @@ mod erc721_metadata_component {
         +HasComponent<TContractState>,
         +IWorldProvider<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +ERC721MetadataHooksTrait<TContractState>,
         +Drop<TContractState>,
     > of IERC721MetadataCamel<ComponentState<TContractState>> {
@@ -107,6 +113,7 @@ mod erc721_metadata_component {
         +IWorldProvider<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
         impl Hooks: ERC721MetadataHooksTrait<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +Drop<TContractState>,
     > of InternalTrait<TContractState> {
         fn get_meta(self: @ComponentState<TContractState>) -> ERC721MetaModel {
@@ -133,6 +140,9 @@ mod erc721_metadata_component {
             symbol: ByteArray,
             base_uri: ByteArray
         ) {
+            let mut src5_component = get_dep_component_mut!(ref self, SRC5);
+            src5_component.register_interface(IERC721_ID);
+            src5_component.register_interface(IERC721_METADATA_ID);
             set!(
                 self.get_contract().world(),
                 ERC721MetaModel { token: get_contract_address(), name, symbol, base_uri }
