@@ -120,7 +120,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
-        +ERC721BalanceHooksTrait<TContractState>,
+        // +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721Enumerable<ComponentState<TContractState>> {
         fn total_supply(self: @ComponentState<TContractState>) -> u256 {
@@ -152,7 +152,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
-        +ERC721BalanceHooksTrait<TContractState>,
+        // +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of IERC721EnumerableCamel<ComponentState<TContractState>> {
         fn totalSupply(self: @ComponentState<TContractState>) -> u256 {
@@ -185,7 +185,7 @@ mod erc721_enumerable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
-        +ERC721BalanceHooksTrait<TContractState>,
+        // +ERC721BalanceHooksTrait<TContractState>,
         +Drop<TContractState>
     > of InternalTrait<TContractState> {
         fn get_total_supply(self: @ComponentState<TContractState>) -> ERC721EnumerableTotalModel {
@@ -357,6 +357,34 @@ mod erc721_enumerable_component {
                     index: index.low
                 }
             );
+        }
+    }
+
+    //
+    // Balance Hooks
+    //
+    // #[generate_trait]
+    impl ERC721MBalanceHooksImpl<
+        TContractState,
+        +HasComponent<TContractState>,
+        +IWorldProvider<TContractState>,
+        impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
+        +Drop<TContractState>
+    > of ERC721BalanceHooksTrait<TContractState> {
+        fn before_transfer(
+            ref self: erc721_balance_comp::ComponentState<TContractState>,
+            from: ContractAddress,
+            to: ContractAddress,
+            token_id: u256,
+        ) {
+        }
+        fn after_transfer(
+            ref self: erc721_balance_comp::ComponentState<TContractState>,
+            from: ContractAddress,
+            to: ContractAddress,
+            token_id: u256,
+        ) {
         }
     }
 }
