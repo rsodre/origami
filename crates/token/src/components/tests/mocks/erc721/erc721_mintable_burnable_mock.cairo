@@ -1,5 +1,6 @@
 #[dojo::contract]
 mod erc721_mintable_burnable_mock {
+    use origami_token::components::introspection::src5::src5_component;
     use origami_token::components::token::erc721::erc721_approval::erc721_approval_component;
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component;
     use origami_token::components::token::erc721::erc721_metadata::erc721_metadata_component;
@@ -8,6 +9,7 @@ mod erc721_mintable_burnable_mock {
     use origami_token::components::token::erc721::erc721_burnable::erc721_burnable_component;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component;
 
+    component!(path: src5_component, storage: src5, event: SRC5Event);
     component!(
         path: erc721_approval_component, storage: erc721_approval, event: ERC721ApprovalEvent
     );
@@ -33,6 +35,8 @@ mod erc721_mintable_burnable_mock {
     #[storage]
     struct Storage {
         #[substorage(v0)]
+        src5: src5_component::Storage,
+        #[substorage(v0)]
         erc721_approval: erc721_approval_component::Storage,
         #[substorage(v0)]
         erc721_balance: erc721_balance_component::Storage,
@@ -49,6 +53,7 @@ mod erc721_mintable_burnable_mock {
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+        SRC5Event: src5_component::Event,
         ERC721ApprovalEvent: erc721_approval_component::Event,
         ERC721BalanceEvent: erc721_balance_component::Event,
         ERC721MetadataEvent: erc721_metadata_component::Event,
