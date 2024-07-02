@@ -3,24 +3,53 @@ use dojo::world::IWorldDispatcher;
 
 #[starknet::interface]
 trait IERC721MintableBurnablePreset<TState> {
-    // IERC721
-    fn name(self: @TState) -> ByteArray;
-    fn symbol(self: @TState) -> ByteArray;
-    fn token_uri(self: @TState, token_id: u256) -> ByteArray;
-    fn owner_of(self: @TState, account: ContractAddress) -> bool;
-    fn balance_of(self: @TState, account: ContractAddress) -> u256;
-    fn get_approved(self: @TState, token_id: u256) -> ContractAddress;
-    fn transfer_from(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
-    fn approve(ref self: TState, to: ContractAddress, token_id: u256);
-
-    // IERC721CamelOnly
-    fn tokenURI(self: @TState, token_id: u256) -> ByteArray;
-    fn balanceOf(self: @TState, account: ContractAddress) -> u256;
-    fn transferFrom(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
-
     // IWorldProvider
     fn world(self: @TState,) -> IWorldDispatcher;
 
+    // IERC721Metadata
+    fn name(self: @TState) -> ByteArray;
+    fn symbol(self: @TState) -> ByteArray;
+    fn token_uri(self: @TState, token_id: u256) -> ByteArray;
+    // IERC721MetadataCamel
+    fn tokenURI(self: @TState, token_id: u256) -> ByteArray;
+
+    // IERC721Owner
+    fn owner_of(self: @TState, token_id: u256) -> ContractAddress;
+    // IERC721OwnerCamel
+    fn ownerOf(self: @TState, token_id: u256) -> ContractAddress;
+
+    // IERC721Balance
+    fn balance_of(self: @TState, account: ContractAddress) -> u256;
+    fn transfer_from(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
+    fn safe_transfer_from(
+        ref self: TState,
+        from: ContractAddress,
+        to: ContractAddress,
+        token_id: u256,
+        data: Span<felt252>
+    );
+    // IERC721BalanceCamel
+    fn balanceOf(self: @TState, account: ContractAddress) -> u256;
+    fn transferFrom(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
+    fn safeTransferFrom(
+        ref self: TState,
+        from: ContractAddress,
+        to: ContractAddress,
+        token_id: u256,
+        data: Span<felt252>
+    );
+
+    // IERC721Approval
+    fn get_approved(self: @TState, token_id: u256) -> ContractAddress;
+    fn is_approved_for_all(self: @TState, owner: ContractAddress, operator: ContractAddress) -> bool;
+    fn approve(ref self: TState, to: ContractAddress, token_id: u256);
+    fn set_approval_for_all(ref self: TState, operator: ContractAddress, approved: bool);
+    // IERC721ApprovalCamel
+    fn getApproved(self: @TState, token_id: u256) -> ContractAddress;
+    fn isApprovedForAll(self: @TState, owner: ContractAddress, operator: ContractAddress) -> bool;
+    fn setApprovalForAll(ref self: TState, operator: ContractAddress, approved: bool);
+
+    // ERC721MintableBurnable
     fn initializer(
         ref self: TState,
         name: ByteArray,
@@ -31,7 +60,6 @@ trait IERC721MintableBurnablePreset<TState> {
     );
     fn mint(ref self: TState, to: ContractAddress, token_id: u256);
     fn burn(ref self: TState, token_id: u256);
-    fn dojo_resource(self: @TState,) -> felt252;
 }
 
 #[starknet::interface]
@@ -118,6 +146,9 @@ mod ERC721MintableBurnable {
 
     #[abi(embed_v0)]
     impl ERC721OwnerImpl = erc721_owner_component::ERC721OwnerImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl ERC721OwnerCamelImpl = erc721_owner_component::ERC721OwnerCamelImpl<ContractState>;
 
     impl InitializableInternalImpl = initializable_component::InternalImpl<ContractState>;
     impl ERC721ApprovalInternalImpl = erc721_approval_component::InternalImpl<ContractState>;
