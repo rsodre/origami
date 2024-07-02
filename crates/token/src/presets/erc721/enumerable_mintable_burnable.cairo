@@ -3,31 +3,22 @@ use dojo::world::IWorldDispatcher;
 
 #[starknet::interface]
 trait IERC721EnumMintBurnPreset<TState> {
-    // IERC721
-    fn name(self: @TState) -> ByteArray;
-    fn symbol(self: @TState) -> ByteArray;
-    fn token_uri(self: @TState, token_id: u256) -> ByteArray;
-    fn owner_of(self: @TState, account: ContractAddress) -> bool;
-    fn get_approved(self: @TState, token_id: u256) -> ContractAddress;
-    fn approve(ref self: TState, to: ContractAddress, token_id: u256);
-    fn total_supply(self: @TState) -> u256;
-    fn token_by_index(self: @TState, index: u256) -> u256;
-    fn token_of_owner_by_index(self: @TState, owner: ContractAddress, index: u256) -> u256;
-
-    // IERC721CamelOnly
-    fn tokenURI(self: @TState, token_id: u256) -> ByteArray;
-
     // IWorldProvider
     fn world(self: @TState,) -> IWorldDispatcher;
 
-    fn initializer(
-        ref self: TState,
-        name: ByteArray,
-        symbol: ByteArray,
-        base_uri: ByteArray,
-        recipient: ContractAddress,
-        token_ids: Span<u256>
-    );
+    // IERC721Metadata
+    fn name(self: @TState) -> ByteArray;
+    fn symbol(self: @TState) -> ByteArray;
+    fn token_uri(self: @TState, token_id: u256) -> ByteArray;
+    // IERC721MetadataCamel
+    fn tokenURI(self: @TState, token_id: u256) -> ByteArray;
+
+    // IERC721Owner
+    fn owner_of(self: @TState, token_id: u256) -> ContractAddress;
+    // IERC721OwnerCamel
+    fn ownerOf(self: @TState, token_id: u256) -> ContractAddress;
+
+    // IERC721Balance
     fn balance_of(self: @TState, account: ContractAddress) -> u256;
     fn transfer_from(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
     fn safe_transfer_from(
@@ -36,6 +27,45 @@ trait IERC721EnumMintBurnPreset<TState> {
         to: ContractAddress,
         token_id: u256,
         data: Span<felt252>
+    );
+    // IERC721CamelOnly
+    fn balanceOf(self: @TState, account: ContractAddress) -> u256;
+    fn transferFrom(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
+    fn safeTransferFrom(
+        ref self: TState,
+        from: ContractAddress,
+        to: ContractAddress,
+        token_id: u256,
+        data: Span<felt252>
+    );
+
+    // IERC721Approval
+    fn get_approved(self: @TState, token_id: u256) -> ContractAddress;
+    fn is_approved_for_all(self: @TState, owner: ContractAddress, operator: ContractAddress) -> bool;
+    fn approve(ref self: TState, to: ContractAddress, token_id: u256);
+    fn set_approval_for_all(ref self: TState, operator: ContractAddress, approved: bool);
+    // IERC721ApprovalCamel
+    fn getApproved(self: @TState, token_id: u256) -> ContractAddress;
+    fn isApprovedForAll(self: @TState, owner: ContractAddress, operator: ContractAddress) -> bool;
+    fn setApprovalForAll(ref self: TState, operator: ContractAddress, approved: bool);
+
+    // IERC721Enumerable
+    fn total_supply(self: @TState) -> u256;
+    fn token_by_index(self: @TState, index: u256) -> u256;
+    fn token_of_owner_by_index(self: @TState, owner: ContractAddress, index: u256) -> u256;
+    // IERC721EnumerableCamel
+    fn totalSupply(self: @TState) -> u256;
+    fn tokenByIndex(self: @TState, index: u256) -> u256;
+    fn tokenOfOwnerByIndex(self: @TState, owner: ContractAddress, index: u256) -> u256;
+
+    // ERC721EnumMintBurn
+    fn initializer(
+        ref self: TState,
+        name: ByteArray,
+        symbol: ByteArray,
+        base_uri: ByteArray,
+        recipient: ContractAddress,
+        token_ids: Span<u256>
     );
     fn mint(ref self: TState, to: ContractAddress, token_id: u256);
     fn burn(ref self: TState, token_id: u256);
@@ -134,6 +164,9 @@ mod ERC721EnumMintBurn {
 
     #[abi(embed_v0)]
     impl ERC721OwnerImpl = erc721_owner_component::ERC721OwnerImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl ERC721OwnerCamelImpl = erc721_owner_component::ERC721OwnerCamelImpl<ContractState>;
 
     impl InitializableInternalImpl = initializable_component::InternalImpl<ContractState>;
     impl ERC721ApprovalInternalImpl = erc721_approval_component::InternalImpl<ContractState>;
