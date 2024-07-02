@@ -179,7 +179,6 @@ mod erc721_enumerable_component {
         }
     }
 
-
     #[generate_trait]
     impl InternalImpl<
         TContractState,
@@ -360,6 +359,27 @@ mod erc721_enumerable_component {
                     index: index.low
                 }
             );
+        }
+
+        // called by erc721_balance::transfer_from() when enumerable is registered
+        fn after_transfer(
+            ref self: ComponentState<TContractState>,
+            from: ContractAddress,
+            to: ContractAddress,
+            token_id: u256,
+        ) {
+            if (from == Zeroable::zero()) {
+                // mint
+                self.add_token_to_all_tokens_enumeration(token_id);
+            } else {
+                self.remove_token_from_owner_enumeration(from, token_id);
+            }
+            if (to == Zeroable::zero()) {
+                // burn
+                self.remove_token_from_all_tokens_enumeration(token_id);
+            } else {
+                self.add_token_to_owner_enumeration(to, token_id);
+            }
         }
 
         fn initialize(

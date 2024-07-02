@@ -61,6 +61,7 @@ mod ERC721MintableBurnable {
     use token::components::token::erc721::erc721_approval::erc721_approval_component;
     use token::components::token::erc721::erc721_balance::erc721_balance_component;
     use token::components::token::erc721::erc721_burnable::erc721_burnable_component;
+    use token::components::token::erc721::erc721_enumerable::erc721_enumerable_component;
     use token::components::token::erc721::erc721_metadata::erc721_metadata_component;
     use token::components::token::erc721::erc721_metadata_hooks::ERC721MetadataHooksEmptyImpl;
     use token::components::token::erc721::erc721_mintable::erc721_mintable_component;
@@ -75,6 +76,9 @@ mod ERC721MintableBurnable {
     component!(path: erc721_balance_component, storage: erc721_balance, event: ERC721BalanceEvent);
     component!(
         path: erc721_burnable_component, storage: erc721_burnable, event: ERC721BurnableEvent
+    );
+    component!(
+        path: erc721_enumerable_component, storage: erc721_enumerable, event: ERC721EnumerableEvent
     );
     component!(
         path: erc721_metadata_component, storage: erc721_metadata, event: ERC721MetadataEvent
@@ -137,6 +141,8 @@ mod ERC721MintableBurnable {
         #[substorage(v0)]
         erc721_burnable: erc721_burnable_component::Storage,
         #[substorage(v0)]
+        erc721_enumerable: erc721_enumerable_component::Storage,
+        #[substorage(v0)]
         erc721_metadata: erc721_metadata_component::Storage,
         #[substorage(v0)]
         erc721_mintable: erc721_mintable_component::Storage,
@@ -157,6 +163,8 @@ mod ERC721MintableBurnable {
         ERC721BalanceEvent: erc721_balance_component::Event,
         #[flat]
         ERC721BurnableEvent: erc721_burnable_component::Event,
+        #[flat]
+        ERC721EnumerableEvent: erc721_enumerable_component::Event,
         #[flat]
         ERC721MetadataEvent: erc721_metadata_component::Event,
         #[flat]
