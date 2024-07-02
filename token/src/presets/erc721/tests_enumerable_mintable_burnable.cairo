@@ -5,6 +5,11 @@ use token::tests::constants::{ZERO, OWNER, SPENDER, RECIPIENT, TOKEN_ID, TOKEN_I
 
 use token::tests::utils;
 
+use token::components::introspection::src5::src5_component::{SRC5Impl};
+use token::components::token::erc721::interface::{
+    IERC721_ID, IERC721_METADATA_ID, IERC721_ENUMERABLE_ID,
+};
+
 use token::components::token::erc721::erc721_approval::{
     erc_721_token_approval_model, ERC721TokenApprovalModel, erc_721_operator_approval_model,
     ERC721OperatorApprovalModel
@@ -135,6 +140,12 @@ fn test_initializer() {
     assert(enum_mint_burn.name() == "NAME", 'Name should be NAME');
     assert(enum_mint_burn.symbol() == "SYMBOL", 'Symbol should be SYMBOL');
     assert(enum_mint_burn.token_uri(TOKEN_ID) == "URI21", 'Uri should be URI21');
+    assert(enum_mint_burn.tokenURI(TOKEN_ID) == "URI21", 'Uri should be URI21 Camel');
+    
+    assert(enum_mint_burn.supports_interface(IERC721_ID) == true, 'should support IERC721_ID');
+    assert(enum_mint_burn.supports_interface(IERC721_METADATA_ID) == true, 'should support METADATA');
+    assert(enum_mint_burn.supports_interface(IERC721_ENUMERABLE_ID) == true, 'should support ENUMERABLE');
+    assert(enum_mint_burn.supportsInterface(IERC721_ID) == true, 'should support IERC721_ID Camel');
 }
 
 #[test]

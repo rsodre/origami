@@ -7,6 +7,11 @@ use token::tests::constants::{
 
 use token::tests::utils;
 
+use token::components::introspection::src5::src5_component::{SRC5Impl};
+use token::components::token::erc721::interface::{
+    IERC721_ID, IERC721_METADATA_ID, IERC721_ENUMERABLE_ID,
+};
+
 use token::components::token::erc721::erc721_approval::{
     erc_721_token_approval_model, ERC721TokenApprovalModel, erc_721_operator_approval_model,
     ERC721OperatorApprovalModel
@@ -112,6 +117,12 @@ fn test_initializer() {
     assert(mintable_burnable.name() == "NAME", 'Name should be NAME');
     assert(mintable_burnable.symbol() == "SYMBOL", 'Symbol should be SYMBOL');
     assert(mintable_burnable.token_uri(TOKEN_ID) == "URI21", 'Uri should be URI21');
+    assert(mintable_burnable.tokenURI(TOKEN_ID) == "URI21", 'Uri should be URI21 Camel');
+    
+    assert(mintable_burnable.supports_interface(IERC721_ID) == true, 'should support IERC721_ID');
+    assert(mintable_burnable.supports_interface(IERC721_METADATA_ID) == true, 'should support METADATA');
+    assert(mintable_burnable.supports_interface(IERC721_ENUMERABLE_ID) == false, 'should not support ENUMERABLE');
+    assert(mintable_burnable.supportsInterface(IERC721_ID) == true, 'should support IERC721_ID Camel');
 }
 
 #[test]

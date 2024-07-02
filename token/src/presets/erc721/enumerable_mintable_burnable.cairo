@@ -6,6 +6,11 @@ trait IERC721EnumMintBurnPreset<TState> {
     // IWorldProvider
     fn world(self: @TState,) -> IWorldDispatcher;
 
+    // ISRC5
+    fn supports_interface(self: @TState, interface_id: felt252) -> bool;
+    // ISRC5Camel
+    fn supportsInterface(self: @TState, interfaceId: felt252) -> bool;
+
     // IERC721Metadata
     fn name(self: @TState) -> ByteArray;
     fn symbol(self: @TState) -> ByteArray;
@@ -131,6 +136,9 @@ mod ERC721EnumMintBurn {
     impl SRC5Impl = src5_component::SRC5Impl<ContractState>;
 
     #[abi(embed_v0)]
+    impl SRC5CamelImpl = src5_component::SRC5CamelImpl<ContractState>;
+
+    #[abi(embed_v0)]
     impl ERC721ApprovalImpl =
         erc721_approval_component::ERC721ApprovalImpl<ContractState>;
 
@@ -248,7 +256,7 @@ mod ERC721EnumMintBurn {
 
             self.erc721_metadata.initialize(name, symbol, base_uri);
             self.erc721_enumerable.initialize();
-            
+
             self.mint_assets(recipient, token_ids);
 
             self.initializable.initialize();
