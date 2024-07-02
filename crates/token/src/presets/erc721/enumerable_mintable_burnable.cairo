@@ -54,19 +54,6 @@ trait IERC721EnumInit<TState> {
 }
 
 #[starknet::interface]
-trait IERC721EnumTransfer<TState> {
-    fn balance_of(self: @TState, account: ContractAddress) -> u256;
-    fn transfer_from(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
-    fn safe_transfer_from(
-        ref self: TState,
-        from: ContractAddress,
-        to: ContractAddress,
-        token_id: u256,
-        data: Span<felt252>
-    );
-}
-
-#[starknet::interface]
 trait IERC721EnumMintBurn<TState> {
     fn mint(ref self: TState, to: ContractAddress, token_id: u256);
     fn burn(ref self: TState, token_id: u256);
@@ -120,6 +107,14 @@ mod ERC721EnumMintBurn {
     #[abi(embed_v0)]
     impl ERC721ApprovalCamelImpl =
         erc721_approval_component::ERC721ApprovalCamelImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl ERC721BalanceImpl =
+        erc721_balance_component::ERC721BalanceImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl ERC721BalanceCamelImpl =
+        erc721_balance_component::ERC721BalanceCamelImpl<ContractState>;
 
     #[abi(embed_v0)]
     impl ERC721EnumerableImpl =
@@ -220,6 +215,7 @@ mod ERC721EnumMintBurn {
 
             self.erc721_metadata.initialize(name, symbol, base_uri);
             self.erc721_enumerable.initialize();
+            
             self.mint_assets(recipient, token_ids);
 
             self.initializable.initialize();
@@ -227,53 +223,13 @@ mod ERC721EnumMintBurn {
     }
 
     #[abi(embed_v0)]
-    impl TransferImpl of super::IERC721EnumTransfer<ContractState> {
-        fn balance_of(self: @ContractState, account: ContractAddress) -> u256 {
-            self.erc721_balance.get_balance(account).amount.into()
-        }
-
-        fn transfer_from(
-            ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
-        ) {
-            assert(
-                self.erc721_approval.is_approved_or_owner(get_caller_address(), token_id),
-                Errors::UNAUTHORIZED
-            );
-            self.erc721_balance.transfer_internal(from, to, token_id);
-            self.erc721_enumerable.remove_token_from_owner_enumeration(from, token_id);
-            self.erc721_enumerable.add_token_to_owner_enumeration(to, token_id);
-        }
-
-        fn safe_transfer_from(
-            ref self: ContractState,
-            from: ContractAddress,
-            to: ContractAddress,
-            token_id: u256,
-            data: Span<felt252>
-        ) {
-            assert(
-                self.erc721_approval.is_approved_or_owner(get_caller_address(), token_id),
-                Errors::UNAUTHORIZED
-            );
-            self.erc721_balance.safe_transfer_internal(from, to, token_id, data);
-            self.erc721_enumerable.remove_token_from_owner_enumeration(from, token_id);
-            self.erc721_enumerable.add_token_to_owner_enumeration(to, token_id);
-        }
-    }
-
-    #[abi(embed_v0)]
     impl MintBurnImpl of super::IERC721EnumMintBurn<ContractState> {
         fn mint(ref self: ContractState, to: ContractAddress, token_id: u256) {
             self.erc721_mintable.mint(to, token_id);
-            self.erc721_enumerable.add_token_to_all_tokens_enumeration(token_id);
-            self.erc721_enumerable.add_token_to_owner_enumeration(to, token_id);
         }
 
         fn burn(ref self: ContractState, token_id: u256) {
             self.erc721_burnable.burn(token_id);
-            self.erc721_enumerable.remove_token_from_all_tokens_enumeration(token_id);
-            let owner = self.erc721_owner.owner_of(token_id);
-            self.erc721_enumerable.remove_token_from_owner_enumeration(owner, token_id);
         }
     }
 
@@ -287,10 +243,8 @@ mod ERC721EnumMintBurn {
                     break;
                 }
                 let id = *token_ids.pop_front().unwrap();
-
+                
                 self.erc721_mintable.mint(recipient, id);
-                self.erc721_enumerable.add_token_to_all_tokens_enumeration(id);
-                self.erc721_enumerable.add_token_to_owner_enumeration(recipient, id);
             }
         }
     }
