@@ -16,6 +16,7 @@ mod erc721_metadata_hooks_mock {
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component;
     use origami_token::components::token::erc721::erc721_metadata::erc721_metadata_component;
     use origami_token::components::token::erc721::erc721_mintable::erc721_mintable_component;
+    use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component;
 
     component!(path: src5_component, storage: src5, event: SRC5Event);
@@ -28,6 +29,9 @@ mod erc721_metadata_hooks_mock {
     );
     component!(
         path: erc721_mintable_component, storage: erc721_mintable, event: ERC721MintableEvent
+    );
+    component!(
+        path: erc721_enumerable_component, storage: erc721_enumerable, event: ERC721EnumerableEvent
     );
     component!(path: erc721_owner_component, storage: erc721_owner, event: ERC721OwnerEvent);
 
@@ -53,6 +57,8 @@ mod erc721_metadata_hooks_mock {
         #[substorage(v0)]
         erc721_mintable: erc721_mintable_component::Storage,
         #[substorage(v0)]
+        erc721_enumerable: erc721_enumerable_component::Storage,
+        #[substorage(v0)]
         erc721_owner: erc721_owner_component::Storage,
     }
 
@@ -64,6 +70,7 @@ mod erc721_metadata_hooks_mock {
         ERC721BalanceEvent: erc721_balance_component::Event,
         ERC721MetadataEvent: erc721_metadata_component::Event,
         ERC721MintableEvent: erc721_mintable_component::Event,
+        ERC721EnumerableEvent: erc721_enumerable_component::Event,
         ERC721OwnerEvent: erc721_owner_component::Event
     }
 

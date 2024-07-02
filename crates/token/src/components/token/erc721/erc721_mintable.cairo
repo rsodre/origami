@@ -9,8 +9,10 @@ mod erc721_mintable_component {
         IWorldProvider, IWorldProviderDispatcher, IWorldDispatcher, IWorldDispatcherTrait
     };
 
+    use origami_token::components::introspection::src5::src5_component as src5_comp;
     use origami_token::components::token::erc721::erc721_approval::erc721_approval_component as erc721_approval_comp;
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component as erc721_balance_comp;
+    use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component as erc721_enumerable_comp;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
 
     use erc721_approval_comp::InternalImpl as ERC721ApprovalInternal;
@@ -34,6 +36,8 @@ mod erc721_mintable_component {
         impl ERC721Approval: erc721_approval_comp::HasComponent<TContractState>,
         impl ERC721Balance: erc721_balance_comp::HasComponent<TContractState>,
         impl ERC721Owner: erc721_owner_comp::HasComponent<TContractState>,
+        impl ERC721Enumerable: erc721_enumerable_comp::HasComponent<TContractState>,
+        impl SRC5: src5_comp::HasComponent<TContractState>,
         +Drop<TContractState>,
     > of InternalTrait<TContractState> {
         fn mint(ref self: ComponentState<TContractState>, to: ContractAddress, token_id: u256) {
