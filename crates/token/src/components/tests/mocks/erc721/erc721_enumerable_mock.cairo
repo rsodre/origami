@@ -24,6 +24,8 @@ mod erc721_enumerable_mock {
     use origami_token::components::introspection::src5::src5_component;
     use origami_token::components::token::erc721::erc721_approval::erc721_approval_component;
     use origami_token::components::token::erc721::erc721_balance::erc721_balance_component;
+    use origami_token::components::token::erc721::erc721_mintable::erc721_mintable_component;
+    use origami_token::components::token::erc721::erc721_burnable::erc721_burnable_component;
     use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component;
     use origami_token::components::token::erc721::erc721_owner::erc721_owner_component;
 

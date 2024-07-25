@@ -1,20 +1,33 @@
-use integer::BoundedInt;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use dojo::test_utils::spawn_test_world;
+use dojo::utils::test::spawn_test_world;
 use origami_token::tests::constants::{OWNER};
 
 use origami_token::components::token::erc721::erc721_metadata::{erc_721_meta_model, ERC721MetaModel,};
 use origami_token::components::token::erc721::erc721_metadata::erc721_metadata_component::{
     ERC721MetadataImpl, ERC721MetadataCamelImpl, InternalImpl
 };
+use origami_token::components::token::erc721::erc721_balance::{
+    erc_721_balance_model, ERC721BalanceModel,
+};
+use origami_token::components::token::erc721::erc721_balance::erc721_balance_component::{
+    ERC721BalanceImpl, InternalImpl as ERC721BalanceInternalImpl
+};
+use origami_token::components::token::erc721::erc721_owner::{erc_721_owner_model, ERC721OwnerModel};
 use origami_token::components::token::erc721::erc721_mintable::erc721_mintable_component::InternalImpl as ERC721MintableInternalImpl;
+use origami_token::components::introspection::src5::{src_5_model, SRC5Model};
 
 use origami_token::components::tests::mocks::erc721::erc721_metadata_hooks_mock::erc721_metadata_hooks_mock;
-use starknet::storage::{StorageMemberAccessTrait};
 
 
 fn STATE() -> (IWorldDispatcher, erc721_metadata_hooks_mock::ContractState) {
-    let world = spawn_test_world(array![erc_721_meta_model::TEST_CLASS_HASH,]);
+    let world = spawn_test_world(
+        ["origami_token"].span(),
+        array![
+            erc_721_meta_model::TEST_CLASS_HASH,
+            erc_721_balance_model::TEST_CLASS_HASH,
+            erc_721_owner_model::TEST_CLASS_HASH,
+            src_5_model::TEST_CLASS_HASH,
+        ].span());
 
     let mut state = erc721_metadata_hooks_mock::contract_state_for_testing();
     state.world_dispatcher.write(world);
@@ -29,7 +42,6 @@ fn test_erc721_metadata_hooks_initialize() {
     let NAME: ByteArray = "NAME";
     let SYMBOL: ByteArray = "SYMBOL";
     let URI: ByteArray = "URI";
-
     state.erc721_metadata.initialize(NAME, SYMBOL, URI);
 
     assert(state.erc721_metadata.name() == "NAME", 'Should be NAME');
