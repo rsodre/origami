@@ -58,25 +58,20 @@ mod erc721_balance_component {
     use dojo::world::{
         IWorldProvider, IWorldProviderDispatcher, IWorldDispatcher, IWorldDispatcherTrait
     };
-    use origami_token::components::introspection::src5::{ISRC5Dispatcher, ISRC5DispatcherTrait};
-    use origami_token::components::token::erc721::erc721_approval::erc721_approval_component as erc721_approval_comp;
-    use origami_token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
-    use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component as erc721_enumerable_comp;
-    use origami_token::components::token::erc721::interface::{
-        IERC721_RECEIVER_ID, IERC721ReceiverDispatcher, IERC721ReceiverDispatcherTrait
-    };
-    use erc721_approval_comp::InternalImpl as ERC721ApprovalInternal;
-    use erc721_owner_comp::InternalImpl as ERC721OwnerInternal;
-    use erc721_enumerable_comp::InternalImpl as ERC721EnumerableInternal;
-
     use origami_token::components::introspection::src5::{
         ISRC5Dispatcher, ISRC5DispatcherTrait,
         src5_component, src5_component::SRC5,
     };    
+    use origami_token::components::token::erc721::erc721_approval::erc721_approval_component as erc721_approval_comp;
+    use origami_token::components::token::erc721::erc721_owner::erc721_owner_component as erc721_owner_comp;
+    use origami_token::components::token::erc721::erc721_enumerable::erc721_enumerable_component as erc721_enumerable_comp;
     use origami_token::components::token::erc721::interface::{
         IERC721ReceiverDispatcher, IERC721ReceiverDispatcherTrait,
         IERC721_RECEIVER_ID, IERC721_ENUMERABLE_ID,
     };
+    use erc721_approval_comp::InternalImpl as ERC721ApprovalInternal;
+    use erc721_owner_comp::InternalImpl as ERC721OwnerInternal;
+    use erc721_enumerable_comp::InternalImpl as ERC721EnumerableInternal;
 
 
     #[storage]

@@ -17,6 +17,8 @@ use origami_token::components::token::erc721::erc721_balance::{
 };
 use origami_token::components::token::erc721::erc721_owner::{erc_721_owner_model, ERC721OwnerModel};
 
+use origami_token::components::introspection::src5::{src_5_model, SRC5Model};
+
 use origami_token::components::tests::mocks::erc721::erc721_metadata_mock::erc721_metadata_mock;
 
 fn STATE() -> (IWorldDispatcher, erc721_metadata_mock::ContractState) {
@@ -26,6 +28,7 @@ fn STATE() -> (IWorldDispatcher, erc721_metadata_mock::ContractState) {
             erc_721_meta_model::TEST_CLASS_HASH,
             erc_721_balance_model::TEST_CLASS_HASH,
             erc_721_owner_model::TEST_CLASS_HASH,
+            src_5_model::TEST_CLASS_HASH,
         ].span()
     );
 
