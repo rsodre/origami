@@ -7,6 +7,11 @@ use origami_token::tests::constants::{
 
 use origami_token::tests::utils;
 
+use origami_token::components::introspection::src5::src5_component::{SRC5Impl};
+use origami_token::components::token::erc721::interface::{
+    IERC721_ID, IERC721_METADATA_ID, IERC721_ENUMERABLE_ID,
+};
+
 use origami_token::components::token::erc721::erc721_approval::{
     erc_721_token_approval_model, ERC721TokenApprovalModel, erc_721_operator_approval_model,
     ERC721OperatorApprovalModel
@@ -52,6 +57,8 @@ use origami_token::components::token::erc721::erc721_enumerable::{
     erc_721_enumerable_total_model,
 };
 
+use origami_token::components::introspection::src5::{src_5_model, SRC5Model};
+
 use origami_token::components::token::erc721::erc721_owner::erc_721_owner_model;
 use origami_token::components::security::initializable::initializable_model;
 
@@ -73,6 +80,7 @@ fn setup_uninitialized() -> (IWorldDispatcher, IERC721EnumMintBurnPresetDispatch
             erc_721_enumerable_total_model::TEST_CLASS_HASH,
             erc_721_owner_model::TEST_CLASS_HASH,
             initializable_model::TEST_CLASS_HASH,
+            src_5_model::TEST_CLASS_HASH,
         ].span()
     );
 
@@ -118,6 +126,12 @@ fn test_initializer() {
     assert(enum_mint_burn.name() == "NAME", 'Name should be NAME');
     assert(enum_mint_burn.symbol() == "SYMBOL", 'Symbol should be SYMBOL');
     assert(enum_mint_burn.token_uri(TOKEN_ID) == "URI21", 'Uri should be URI21');
+    assert(enum_mint_burn.tokenURI(TOKEN_ID) == "URI21", 'Uri should be URI21 Camel');
+    
+    assert(enum_mint_burn.supports_interface(IERC721_ID) == true, 'should support IERC721_ID');
+    assert(enum_mint_burn.supports_interface(IERC721_METADATA_ID) == true, 'should support METADATA');
+    assert(enum_mint_burn.supports_interface(IERC721_ENUMERABLE_ID) == true, 'should support ENUMERABLE');
+    assert(enum_mint_burn.supportsInterface(IERC721_ID) == true, 'should support IERC721_ID Camel');
 }
 
 #[test]
