@@ -13,7 +13,7 @@ use starknet::testing;
 
 // Dojo imports
 
-use dojo::test_utils::spawn_test_world;
+use dojo::utils::test::spawn_test_world;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 // External imports
