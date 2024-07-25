@@ -7,6 +7,11 @@ use origami_token::tests::constants::{
 
 use origami_token::tests::utils;
 
+use origami_token::components::introspection::src5::src5_component::{SRC5Impl};
+use origami_token::components::token::erc721::interface::{
+    IERC721_ID, IERC721_METADATA_ID, IERC721_ENUMERABLE_ID,
+};
+
 use origami_token::components::token::erc721::erc721_approval::{
     erc_721_token_approval_model, ERC721TokenApprovalModel, erc_721_operator_approval_model,
     ERC721OperatorApprovalModel
@@ -50,6 +55,8 @@ use origami_token::components::tests::token::erc721::test_erc721_balance::{
 
 use origami_token::components::security::initializable::initializable_model;
 
+use origami_token::components::introspection::src5::{src_5_model, SRC5Model};
+
 use origami_token::components::token::erc721::erc721_enumerable::{
     erc_721_enumerable_index_model, erc_721_enumerable_owner_index_model,
     erc_721_enumerable_token_model, erc_721_enumerable_owner_token_model,
@@ -76,6 +83,7 @@ fn setup_uninitialized() -> (IWorldDispatcher, IERC721MintableBurnablePresetDisp
             erc_721_enumerable_total_model::TEST_CLASS_HASH,
             erc_721_owner_model::TEST_CLASS_HASH,
             initializable_model::TEST_CLASS_HASH,
+            src_5_model::TEST_CLASS_HASH,
         ].span()
     );
 
@@ -119,6 +127,12 @@ fn test_initializer() {
     assert(mintable_burnable.name() == "NAME", 'Name should be NAME');
     assert(mintable_burnable.symbol() == "SYMBOL", 'Symbol should be SYMBOL');
     assert(mintable_burnable.token_uri(TOKEN_ID) == "URI21", 'Uri should be URI21');
+    assert(mintable_burnable.tokenURI(TOKEN_ID) == "URI21", 'Uri should be URI21 Camel');
+    
+    assert(mintable_burnable.supports_interface(IERC721_ID) == true, 'should support IERC721_ID');
+    assert(mintable_burnable.supports_interface(IERC721_METADATA_ID) == true, 'should support METADATA');
+    assert(mintable_burnable.supports_interface(IERC721_ENUMERABLE_ID) == false, 'should not support ENUMERABLE');
+    assert(mintable_burnable.supportsInterface(IERC721_ID) == true, 'should support IERC721_ID Camel');
 }
 
 #[test]
