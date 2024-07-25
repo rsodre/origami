@@ -6,6 +6,11 @@ trait IERC721EnumMintBurnPreset<TState> {
     // IWorldProvider
     fn world(self: @TState,) -> IWorldDispatcher;
 
+    // ISRC5
+    fn supports_interface(self: @TState, interface_id: felt252) -> bool;
+    // ISRC5Camel
+    fn supportsInterface(self: @TState, interfaceId: felt252) -> bool;
+
     // IERC721Metadata
     fn name(self: @TState) -> ByteArray;
     fn symbol(self: @TState) -> ByteArray;
@@ -28,7 +33,7 @@ trait IERC721EnumMintBurnPreset<TState> {
         token_id: u256,
         data: Span<felt252>
     );
-    // IERC721CamelOnly
+    // IERC721BalanceCamel
     fn balanceOf(self: @TState, account: ContractAddress) -> u256;
     fn transferFrom(ref self: TState, from: ContractAddress, to: ContractAddress, token_id: u256);
     fn safeTransferFrom(
@@ -131,6 +136,9 @@ mod ERC721EnumMintBurn {
     impl SRC5Impl = src5_component::SRC5Impl<ContractState>;
 
     #[abi(embed_v0)]
+    impl SRC5CamelImpl = src5_component::SRC5CamelImpl<ContractState>;
+
+    #[abi(embed_v0)]
     impl ERC721ApprovalImpl =
         erc721_approval_component::ERC721ApprovalImpl<ContractState>;
 
@@ -189,9 +197,9 @@ mod ERC721EnumMintBurn {
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        src5: src5_component::Storage,
-        #[substorage(v0)]
         initializable: initializable_component::Storage,
+        #[substorage(v0)]
+        src5: src5_component::Storage,
         #[substorage(v0)]
         erc721_approval: erc721_approval_component::Storage,
         #[substorage(v0)]
@@ -212,9 +220,9 @@ mod ERC721EnumMintBurn {
     #[derive(Drop, starknet::Event)]
     enum Event {
         #[flat]
-        SRC5Event: src5_component::Event,
-        #[flat]
         InitializableEvent: initializable_component::Event,
+        #[flat]
+        SRC5Event: src5_component::Event,
         #[flat]
         ERC721ApprovalEvent: erc721_approval_component::Event,
         #[flat]
@@ -248,7 +256,7 @@ mod ERC721EnumMintBurn {
 
             self.erc721_metadata.initialize(name, symbol, base_uri);
             self.erc721_enumerable.initialize();
-            
+
             self.mint_assets(recipient, token_ids);
 
             self.initializable.initialize();
