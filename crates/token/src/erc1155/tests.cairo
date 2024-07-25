@@ -15,7 +15,7 @@ use starknet::ContractAddress;
 use starknet::contract_address_const;
 use starknet::testing;
 use zeroable::Zeroable;
-use dojo::test_utils::spawn_test_world;
+use dojo::utils::test::spawn_test_world;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 use origami_token::erc1155::models::{

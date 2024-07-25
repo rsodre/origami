@@ -24,6 +24,10 @@ use origami_token::components::token::erc721::erc721_approval::{
 use origami_token::components::token::erc721::erc721_mintable::erc721_mintable_component::InternalImpl as ERC721MintableInternalImpl;
 use origami_token::components::token::erc721::erc721_burnable::erc721_burnable_component::InternalImpl as ERC721BurnableInternalImpl;
 
+use origami_token::components::token::erc721::erc721_owner::erc721_owner_component::{
+    ERC721OwnerImpl, ERC721OwnerCamelImpl, InternalImpl as ERC721OwnerInternalImpl
+};
+
 use origami_token::components::tests::mocks::erc721::erc721_mintable_burnable_mock::erc721_mintable_burnable_mock;
 
 fn STATE() -> (IWorldDispatcher, erc721_mintable_burnable_mock::ContractState) {
